@@ -75,12 +75,7 @@ fn main() {
 
     println!("You selected the league: {}", args.league);
 
-    let maybe_date = match args.date {
-        Some(date) => Some(date),
-        None => None,
-    };
-
-    let todays_games = match fetch_events(maybe_date, args.league) {
+    let todays_games = match fetch_events(args.date, args.league) {
         Ok(games) => games,
         Err(e) => {
             println!("Failed to fetch events: {e}");
