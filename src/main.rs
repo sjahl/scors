@@ -31,6 +31,8 @@ struct Team {
 struct Competitor {
     score: String,
     team: Team,
+    #[serde(rename = "homeAway")]
+    home_away: String,
 }
 
 #[derive(Deserialize, Debug)]
@@ -87,12 +89,30 @@ fn default_league(sport: &str) -> &str {
 }
 
 fn display_score(event: &Event) -> String {
+    let mut home_team = 0;
+    let mut away_team = 1;
+    match event.competitions[0].competitors[0].home_away.as_str() {
+        "home" => {
+            home_team = 0;
+            away_team = 1;
+        }
+        "away" => {
+            away_team = 0;
+            home_team = 1;
+        }
+        _ => {}
+    }
+
     format!(
         "{} {} - {} {}",
-        event.competitions[0].competitors[0].team.abbreviation,
-        event.competitions[0].competitors[0].score,
-        event.competitions[0].competitors[1].score,
-        event.competitions[0].competitors[1].team.abbreviation,
+        event.competitions[0].competitors[home_team]
+            .team
+            .abbreviation,
+        event.competitions[0].competitors[home_team].score,
+        event.competitions[0].competitors[away_team].score,
+        event.competitions[0].competitors[away_team]
+            .team
+            .abbreviation,
     )
 }
 
