@@ -1,6 +1,5 @@
 // TODO:
 // 4. instead of relying on ordering, check for home/away status for each competitor.
-// 6. pad the team names to handle 2 and 4 char abbreviations
 // longer term: have a persistent TUI that updates periodically
 use clap::Parser;
 use serde::Deserialize;
@@ -14,8 +13,8 @@ struct Args {
     date: Option<String>,
 
     // League to fetch scores for
-    #[arg(short, long, default_value = "eng.1")]
-    league: String,
+    #[arg(short, long)]
+    league: Option<String>,
 
     // sport to fetch scores for
     #[arg(short, long, default_value = "soccer")]
@@ -77,6 +76,16 @@ fn parse_league(input: &str) -> &str {
     }
 }
 
+fn default_league(sport: &str) -> &str {
+    match sport {
+        "soccer" => "eng.1",
+        "hockey" => "nhl",
+        "football" => "nfl",
+        "baseball" => "mlb",
+        _ => "eng.1",
+    }
+}
+
 fn fetch_events(
     date_str: Option<String>,
     league: &str,
@@ -101,12 +110,12 @@ fn main() {
 
     let args = Args::parse();
 
-    let lg = parse_league(&args.league);
+    let lg = match &args.league {
+        Some(league) => parse_league(league),
+        None => default_league(&args.sport),
+    };
 
-    println!(
-        "You selected the league: {}, sport: {}.\nResolved to: {}",
-        args.league, args.sport, lg
-    );
+    println!("Fetching {} scores for league: {}", args.sport, lg);
 
     let todays_games = match fetch_events(args.date, lg, &args.sport) {
         Ok(games) => games,
