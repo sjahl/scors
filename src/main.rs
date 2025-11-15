@@ -86,6 +86,16 @@ fn default_league(sport: &str) -> &str {
     }
 }
 
+fn display_score(event: &Event) -> String {
+    format!(
+        "{} {} - {} {}",
+        event.competitions[0].competitors[0].team.abbreviation,
+        event.competitions[0].competitors[0].score,
+        event.competitions[0].competitors[1].score,
+        event.competitions[0].competitors[1].team.abbreviation,
+    )
+}
+
 fn fetch_events(
     date_str: Option<String>,
     league: &str,
@@ -129,13 +139,7 @@ fn main() {
         println!("No games scheduled");
     } else {
         for event in &todays_games.events {
-            println!(
-                "{} {} - {} {}",
-                event.competitions[0].competitors[0].team.abbreviation,
-                event.competitions[0].competitors[0].score,
-                event.competitions[0].competitors[1].score,
-                event.competitions[0].competitors[1].team.abbreviation,
-            );
+            println!("{}", display_score(event));
         }
     }
 }
