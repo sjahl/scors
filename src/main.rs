@@ -1,30 +1,9 @@
 // TODO:
 // 4. instead of relying on ordering, check for home/away status for each competitor.
-// 5. Provide a nice mapping to make League selection easier, e.g. EPL -> eng.1
 // 6. pad the team names to handle 2 and 4 char abbreviations
 // longer term: have a persistent TUI that updates periodically
-use std::collections::HashMap;
-use std::sync::LazyLock;
-
 use clap::Parser;
 use serde::Deserialize;
-
-// this feels like unnecessary complication just go get a constant defined... maybe just deal with this
-// and build the hash at runtime
-static LEAGUE_ID_MAPPINGS: LazyLock<HashMap<&str, &str>> = LazyLock::new(|| {
-    HashMap::from([
-        ("premier", "eng.1"),
-        ("efl-championship", "eng.2"),
-        ("efl-1", "eng.3"),
-        ("efl-2", "eng.4"),
-        ("mls", "usa.1"),
-        ("bundesliga", "ger.1"),
-        ("bundesliga-2", "ger.2"),
-        ("laliga", "esp.1"),
-        ("ligue-1", "fra.1"),
-        ("eredivisie", "ned.1"),
-    ])
-});
 
 // command line
 #[derive(Parser, Debug)]
@@ -122,9 +101,14 @@ fn main() {
 
     let args = Args::parse();
 
-    println!("You selected the league: {}", args.league);
+    let lg = parse_league(&args.league);
 
-    let todays_games = match fetch_events(args.date, &args.league, &args.sport) {
+    println!(
+        "You selected the league: {}, sport: {}.\nResolved to: {}",
+        args.league, args.sport, lg
+    );
+
+    let todays_games = match fetch_events(args.date, lg, &args.sport) {
         Ok(games) => games,
         Err(e) => {
             println!("Failed to fetch events: {e}");
