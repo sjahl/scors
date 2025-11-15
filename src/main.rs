@@ -1,5 +1,4 @@
 // TODO:
-// 4. instead of relying on ordering, check for home/away status for each competitor.
 // longer term: have a persistent TUI that updates periodically
 use clap::Parser;
 use serde::Deserialize;
@@ -92,10 +91,6 @@ fn display_score(event: &Event) -> String {
     let mut home_team = 0;
     let mut away_team = 1;
     match event.competitions[0].competitors[0].home_away.as_str() {
-        "home" => {
-            home_team = 0;
-            away_team = 1;
-        }
         "away" => {
             away_team = 0;
             home_team = 1;
