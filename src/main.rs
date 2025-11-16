@@ -61,7 +61,7 @@ impl Event {
         }
 
         format!(
-            "{} {} - {} {}",
+            "{:>4} {:<3} - {:>3} {:<4}",
             self.competitions[0].competitors[home_team]
                 .team
                 .abbreviation,
