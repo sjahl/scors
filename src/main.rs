@@ -81,29 +81,31 @@ struct EventsList {
 
 fn parse_league(input: &str) -> &str {
     match input {
-        "efl-championship" | "championship" => "eng.2",
-        "efl-1" => "eng.3",
-        "efl-2" => "eng.4",
         "bundesliga" => "ger.1",
         "bundesliga-2" => "ger.2",
+        "cfb" => "college-football",
+        "efl-1" => "eng.3",
+        "efl-2" => "eng.4",
+        "efl-championship" | "championship" => "eng.2",
+        "eredevisie" => "ned.1",
         "laliga" => "esp.1",
         "ligue-1" => "fra.1",
-        "eredevisie" => "ned.1",
+        "mlb" => "mlb",
         "mls" => "usa.1",
-        "cfb" => "college-football",
+        "nba" => "nba",
         "nfl" => "nfl",
         "nhl" => "nhl",
-        "mlb" => "mlb",
-        _ => "eng.1", // intended match 'premier' by default
+        _ => "eng.1", // typical match 'premier' by default
     }
 }
 
 fn default_league(sport: &str) -> &str {
     match sport {
-        "hockey" => "nhl",
-        "football" => "nfl",
         "baseball" => "mlb",
-        _ => "eng.1", // matches 'soccer' by default
+        "basketball" => "nba",
+        "football" => "nfl",
+        "hockey" => "nhl",
+        _ => "eng.1", // we match 'soccer' by default
     }
 }
 
