@@ -58,9 +58,7 @@ struct EventsList {
 
 fn parse_league(input: &str) -> &str {
     match input {
-        "premier" => "eng.1",
-        "efl-championship" => "eng.2",
-        "championship" => "eng.2",
+        "efl-championship" | "championship" => "eng.2",
         "efl-1" => "eng.3",
         "efl-2" => "eng.4",
         "bundesliga" => "ger.1",
@@ -73,29 +71,25 @@ fn parse_league(input: &str) -> &str {
         "nfl" => "nfl",
         "nhl" => "nhl",
         "mlb" => "mlb",
-        _ => "eng.1", // default
+        _ => "eng.1", // intended match 'premier' by default
     }
 }
 
 fn default_league(sport: &str) -> &str {
     match sport {
-        "soccer" => "eng.1",
         "hockey" => "nhl",
         "football" => "nfl",
         "baseball" => "mlb",
-        _ => "eng.1",
+        _ => "eng.1", // matches 'soccer' by default
     }
 }
 
 fn display_score(event: &Event) -> String {
     let mut home_team = 0;
     let mut away_team = 1;
-    match event.competitions[0].competitors[0].home_away.as_str() {
-        "away" => {
-            away_team = 0;
-            home_team = 1;
-        }
-        _ => {}
+    if event.competitions[0].competitors[0].home_away.as_str() == "away" {
+        away_team = 0;
+        home_team = 1;
     }
 
     format!(
