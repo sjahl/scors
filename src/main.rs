@@ -51,6 +51,29 @@ struct Event {
     competitions: Vec<Competitions>,
 }
 
+impl Event {
+    fn simple_score(&self) -> String {
+        let mut home_team = 0;
+        let mut away_team = 1;
+        if self.competitions[0].competitors[0].home_away.as_str() == "away" {
+            away_team = 0;
+            home_team = 1;
+        }
+
+        format!(
+            "{} {} - {} {}",
+            self.competitions[0].competitors[home_team]
+                .team
+                .abbreviation,
+            self.competitions[0].competitors[home_team].score,
+            self.competitions[0].competitors[away_team].score,
+            self.competitions[0].competitors[away_team]
+                .team
+                .abbreviation,
+        )
+    }
+}
+
 #[derive(Deserialize, Debug)]
 struct EventsList {
     events: Vec<Event>,
@@ -82,27 +105,6 @@ fn default_league(sport: &str) -> &str {
         "baseball" => "mlb",
         _ => "eng.1", // matches 'soccer' by default
     }
-}
-
-fn display_score(event: &Event) -> String {
-    let mut home_team = 0;
-    let mut away_team = 1;
-    if event.competitions[0].competitors[0].home_away.as_str() == "away" {
-        away_team = 0;
-        home_team = 1;
-    }
-
-    format!(
-        "{} {} - {} {}",
-        event.competitions[0].competitors[home_team]
-            .team
-            .abbreviation,
-        event.competitions[0].competitors[home_team].score,
-        event.competitions[0].competitors[away_team].score,
-        event.competitions[0].competitors[away_team]
-            .team
-            .abbreviation,
-    )
 }
 
 fn fetch_events(
@@ -148,7 +150,7 @@ fn main() {
         println!("No games scheduled");
     } else {
         for event in &todays_games.events {
-            println!("{}", display_score(event));
+            println!("{}", event.simple_score());
         }
     }
 }
