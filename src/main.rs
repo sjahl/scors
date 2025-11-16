@@ -1,6 +1,6 @@
 // TODO:
 // longer term: have a persistent TUI that updates periodically
-use clap::Parser;
+use clap::{Parser, builder::PossibleValuesParser};
 use serde::Deserialize;
 
 // command line
@@ -12,7 +12,7 @@ struct Args {
     date: Option<String>,
 
     // League to fetch scores for
-    #[arg(short, long)]
+    #[arg(short, long, value_parser = PossibleValuesParser::new(["premier", "efl-championship", "championship", "efl-1", "efl-2", "bundesliga", "bundesliga-2", "laliga", "ligue-1", "eredevisie", "mls", "mlb", "nhl", "nfl", "cfb"]))]
     league: Option<String>,
 
     // sport to fetch scores for
